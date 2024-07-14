@@ -1,6 +1,31 @@
 <!-- markdownlint-disable-file MD004 MD024 MD034 MD036 -->
 # CHANGE LOG
 
+## main branch
+
+- 移除 `apiV1` 相关代码和相关的数据库表
+- 更新 `admin/statistics` api, 添加用户统计信息
+
+## v0.5.4
+
+- 点击 logo 5 次进入 admin 页面
+- 修复 401 时无法跳转登录页面(admin 和 网站认证)
+
+## v0.5.3
+
+- 修复 smtp imap proxy sever 的一些 bug
+- 完善用户/admin 删除收件箱/发件箱的功能
+- admin 可以删除 发件权限记录
+- 添加中文邮件别名配置 `DOMAIN_LABELS` [文档](https://temp-mail-docs.awsl.uk/zh/guide/cli/worker.html)
+- 移除 `mail channels` 相关代码
+- github actions 增加 `FRONTEND_BRANCH` 变量用于指定部署的分支 (#324)
+
+## v0.5.1
+
+- 添加 `mail-parser-wasm-worker` 用于 worker 解析邮件, [文档](https://temp-mail-docs.awsl.uk/zh/guide/feature/mail_parser_wasm_worker.html)
+- 添加校验用户邮箱长度配置 `MIN_ADDRESS_LEN` 和 `MAX_ADDRESS_LEN`
+- 修复 `pages function` 未转发 `telegram` api 问题
+
 ## v0.5.0
 
 - UI: 增加本地缓存进行地址管理

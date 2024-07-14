@@ -18,6 +18,9 @@ node_compat = true
 [vars]
 # TITLE = "Custom Title" # custom title
 PREFIX = "tmp"
+# (min, max) length of the adderss, if not set, the default is (1, 30)
+# MIN_ADDRESS_LEN = 1
+# MAX_ADDRESS_LEN = 30
 # IF YOU WANT TO MAKE YOUR SITE PRIVATE, UNCOMMENT THE FOLLOWING LINES
 # PASSWORDS = ["123", "456"]
 # For admin panel
@@ -25,6 +28,8 @@ PREFIX = "tmp"
 # ADMIN CONTACT, CAN BE ANY STRING
 # ADMIN_CONTACT = "xx@xx.xxx"
 DOMAINS = ["xxx.xxx1" , "xxx.xxx2"]
+# For chinese domain name, you can use DOMAIN_LABELS to show chinese domain name
+# DOMAIN_LABELS = ["中文.xxx", "xxx.xxx2"]
 JWT_SECRET = "xxx"
 BLACK_LIST = ""
 # Allow users to create email addresses
@@ -42,9 +47,6 @@ ENABLE_AUTO_REPLY = false
 # Turnstile verification
 # CF_TURNSTILE_SITE_KEY = ""
 # CF_TURNSTILE_SECRET_KEY = ""
-# dkim config
-# DKIM_SELECTOR = ""
-# DKIM_PRIVATE_KEY = ""
 # telegram bot
 # TG_MAX_ACCOUNTS = 5
 # global forward address list, if set, all emails will be forwarded to these addresses

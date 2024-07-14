@@ -76,6 +76,9 @@ node_compat = true
 [vars]
 # TITLE = "Custom Title" # The title of the site
 PREFIX = "tmp" # The mailbox name prefix to be processed
+# (min, max) length of the adderss, if not set, the default is (1, 30)
+# MIN_ADDRESS_LEN = 1
+# MAX_ADDRESS_LEN = 30
 # If you want your site to be private, uncomment below and change your password
 # PASSWORDS = ["123", "456"]
 # admin console password, if not configured, access to the console is not allowed
@@ -83,6 +86,8 @@ PREFIX = "tmp" # The mailbox name prefix to be processed
 # admin contact information. If not configured, it will not be displayed. Any string can be configured.
 # ADMIN_CONTACT = "xx@xx.xxx"
 DOMAINS = ["xxx.xxx1" , "xxx.xxx2"] # your domain name
+# For chinese domain name, you can use DOMAIN_LABELS to show chinese domain name
+# DOMAIN_LABELS = ["中文.xxx", "xxx.xxx2"]
 JWT_SECRET = "xxx" # Key used to generate jwt
 BLACK_LIST = "" # Blacklist, used to filter senders, comma separated
 # Allow users to create email addresses
@@ -100,9 +105,6 @@ ENABLE_AUTO_REPLY = false
 # Turnstile verification configuration
 # CF_TURNSTILE_SITE_KEY = ""
 # CF_TURNSTILE_SECRET_KEY = ""
-# dkim config
-# DKIM_SELECTOR = "mailchannels" # Refer to the DKIM section mailchannels._domainkey for mailchannels
-# DKIM_PRIVATE_KEY = "" # Refer to the contents of priv_key.txt in the DKIM section
 # telegram bot
 # TG_MAX_ACCOUNTS = 5
 # global forward address list, if set, all emails will be forwarded to these addresses
@@ -154,39 +156,3 @@ pnpm run deploy
 ```
 
 ![pages](/readme_assets/pages.png)
-
-## Configure sending emails
-
-Find the `SPF` record of `TXT` in the domain name `DNS` record, and add `include:relay.mailchannels.net`
-
-```bash
-v=spf1 include:_spf.mx.cloudflare.net include:relay.mailchannels.net ~all
-```
-
-Create a new `_mailchannels` record, the type is `TXT`, the content is `v=mc1 cfid=your worker domain name`
-
-- The worker domain name here is the domain name of the back-end api. For example, if I deploy it at `https://temp-email-api.awsl.uk/`, fill in `v=mc1 cfid=awsl.uk`
-- If your domain name is `https://temp-email-api.xxx.workers.dev`, fill in `v=mc1 cfid=xxx.workers.dev`
-
-## Configure DKIM
-
-Ref: [Adding-a-DKIM-Signature](https://support.mailchannels.com/hc/en-us/articles/7122849237389-Adding-a-DKIM-Signature)
-
-Creating a DKIM private and public key:
-Private key as PEM file and base64 encoded txt file:
-
-```bash
-openssl genrsa 2048 | tee priv_key.pem | openssl rsa -outform der | openssl base64 -A > priv_key.txt
-```
-
-Public key as DNS record:
-
-```bash
-echo -n "v=DKIM1;p=" > pub_key_record.txt && \
-openssl rsa -in priv_key.pem -pubout -outform der | openssl base64 -A >> pub_key_record.txt
-```
-
-Add `TXT` record in `Cloudflare` all your mail domain `DNS`
-
-- `_dmarc`: `v=DMARC1; p=none; adkim=r; aspf=r;`
-- `mailchannels._domainkey`: `v=DKIM1; p=<content of the file pub_key_record.txt>`

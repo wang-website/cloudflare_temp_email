@@ -10,7 +10,8 @@ const {
 
 const instance = axios.create({
     baseURL: API_BASE,
-    timeout: 30000
+    timeout: 30000,
+    validateStatus: (status) => status >= 200 && status <= 500
 });
 
 const apiFetch = async (path, options = {}) => {
@@ -27,13 +28,13 @@ const apiFetch = async (path, options = {}) => {
                 'Content-Type': 'application/json',
             },
         });
-        if (response.status === 401 && openSettings.value.auth) {
-            showAuth.value = true;
-            throw new Error("Unauthorized, you access password is wrong")
-        }
         if (response.status === 401 && path.startsWith("/admin")) {
             showAdminAuth.value = true;
             throw new Error("Unauthorized, your admin password is wrong")
+        }
+        if (response.status === 401 && openSettings.value.auth) {
+            showAuth.value = true;
+            throw new Error("Unauthorized, you access password is wrong")
         }
         if (response.status >= 300) {
             throw new Error(`${response.status} ${response.data}` || "error");
@@ -53,13 +54,16 @@ const apiFetch = async (path, options = {}) => {
 const getOpenSettings = async (message) => {
     try {
         const res = await api.fetch("/open_api/settings");
+        const domainLabels = res["domainLabels"] || [];
         Object.assign(openSettings.value, {
             title: res["title"] || "",
             prefix: res["prefix"] || "",
+            minAddressLen: res["minAddressLen"] || 1,
+            maxAddressLen: res["maxAddressLen"] || 30,
             needAuth: res["needAuth"] || false,
-            domains: res["domains"].map((domain) => {
+            domains: res["domains"].map((domain, index) => {
                 return {
-                    label: domain,
+                    label: domainLabels.length > index ? domainLabels[index] : domain,
                     value: domain
                 }
             }),

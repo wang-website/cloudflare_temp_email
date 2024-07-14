@@ -8,7 +8,10 @@ export type Bindings = {
     // config
     TITLE: string | undefined
     PREFIX: string | undefined
+    MIN_ADDRESS_LEN: string | number | undefined
+    MAX_ADDRESS_LEN: string | number | undefined
     DOMAINS: string | string[] | undefined
+    DOMAIN_LABELS: string | string[] | undefined
     PASSWORDS: string | string[] | undefined
     ADMIN_PASSWORDS: string | string[] | undefined
     JWT_SECRET: string
@@ -29,10 +32,6 @@ export type Bindings = {
     S3_SECRET_ACCESS_KEY: string | undefined
     S3_BUCKET: string | undefined
     S3_URL_EXPIRES: number | undefined
-
-    // dkim
-    DKIM_SELECTOR: string | undefined
-    DKIM_PRIVATE_KEY: string | undefined
 
     // cf turnstile
     CF_TURNSTILE_SITE_KEY: string | undefined

@@ -40,7 +40,7 @@ api.post('/admin/new_address', async (c) => {
         return c.text("Please provide a name", 400)
     }
     try {
-        const res = await newAddress(c, name, domain, enablePrefix);
+        const res = await newAddress(c, name, domain, enablePrefix, false);
         return c.json(res);
     } catch (e) {
         return c.text(`Failed create address: ${(e as Error).message}`, 400)
@@ -127,6 +127,16 @@ api.get('/admin/mails_unknow', async (c) => {
     );
 });
 
+api.delete('/admin/mails/:id', async (c) => {
+    const { id } = c.req.param();
+    const { success } = await c.env.DB.prepare(
+        `DELETE FROM raw_mails WHERE id = ? `
+    ).bind(id).run();
+    return c.json({
+        success: success
+    })
+})
+
 api.get('/admin/address_sender', async (c) => {
     const { address, limit, offset } = c.req.query();
     if (address) {
@@ -166,6 +176,16 @@ api.post('/admin/address_sender', async (c) => {
     })
 })
 
+api.delete('/admin/address_sender/:id', async (c) => {
+    const { id } = c.req.param();
+    const { success } = await c.env.DB.prepare(
+        `DELETE FROM address_sender WHERE id = ? `
+    ).bind(id).run();
+    return c.json({
+        success: success
+    })
+})
+
 api.get('/admin/sendbox', async (c) => {
     const { address, limit, offset } = c.req.query();
     if (address) {
@@ -182,6 +202,16 @@ api.get('/admin/sendbox', async (c) => {
     );
 })
 
+api.delete('/admin/sendbox/:id', async (c) => {
+    const { id } = c.req.param();
+    const { success } = await c.env.DB.prepare(
+        `DELETE FROM sendbox WHERE id = ? `
+    ).bind(id).run();
+    return c.json({
+        success: success
+    })
+})
+
 api.get('/admin/statistics', async (c) => {
     const { count: mailCount } = await c.env.DB.prepare(
         `SELECT count(*) as count FROM raw_mails`
@@ -189,16 +219,24 @@ api.get('/admin/statistics', async (c) => {
     const { count: addressCount } = await c.env.DB.prepare(
         `SELECT count(*) as count FROM address`
     ).first<{ count: number }>() || {};
-    const { count: activeUserCount7days } = await c.env.DB.prepare(
+    const { count: activeAddressCount7days } = await c.env.DB.prepare(
         `SELECT count(*) as count FROM address where updated_at > datetime('now', '-7 day')`
+    ).first<{ count: number }>() || {};
+    const { count: activeAddressCount30days } = await c.env.DB.prepare(
+        `SELECT count(*) as count FROM address where updated_at > datetime('now', '-30 day')`
     ).first<{ count: number }>() || {};
     const { count: sendMailCount } = await c.env.DB.prepare(
         `SELECT count(*) as count FROM sendbox`
     ).first<{ count: number }>() || {};
+    const { count: userCount } = await c.env.DB.prepare(
+        `SELECT count(*) as count FROM users`
+    ).first<{ count: number }>() || {};
     return c.json({
         mailCount: mailCount,
-        userCount: addressCount,
-        activeUserCount7days: activeUserCount7days,
+        addressCount: addressCount,
+        activeAddressCount7days: activeAddressCount7days,
+        activeAddressCount30days: activeAddressCount30days,
+        userCount: userCount,
         sendMailCount: sendMailCount
     })
 });

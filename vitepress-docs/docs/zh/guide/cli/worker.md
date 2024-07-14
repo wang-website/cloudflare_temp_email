@@ -44,6 +44,9 @@ node_compat = true
 [vars]
 # TITLE = "Custom Title" # 自定义网站标题
 PREFIX = "tmp" # 要处理的邮箱名称前缀，不需要后缀可配置为空字符串
+# (min, max) adderss的长度，如果不设置，默认为(1, 30)
+# MIN_ADDRESS_LEN = 1
+# MAX_ADDRESS_LEN = 30
 # 如果你想要你的网站私有，取消下面的注释，并修改密码
 # PASSWORDS = ["123", "456"]
 # admin 控制台密码, 不配置则不允许访问控制台
@@ -51,6 +54,8 @@ PREFIX = "tmp" # 要处理的邮箱名称前缀，不需要后缀可配置为空
 # admin 联系方式，不配置则不显示，可配置任意字符串
 # ADMIN_CONTACT = "xx@xx.xxx"
 DOMAINS = ["xxx.xxx1" , "xxx.xxx2"] # 你的域名, 支持多个域名
+# 对于中文域名，可以使用 DOMAIN_LABELS 显示域名的中文展示名称
+# DOMAIN_LABELS = ["中文.xxx", "xxx.xxx2"]
 JWT_SECRET = "xxx" # 用于生成 jwt 的密钥, jwt 用于给用户登录以及鉴权
 BLACK_LIST = "" # 黑名单，用于过滤发件人，逗号分隔
 # 是否允许用户创建邮件, 不配置则不允许
@@ -68,9 +73,6 @@ ENABLE_AUTO_REPLY = false
 # Turnstile 人机验证配置
 # CF_TURNSTILE_SITE_KEY = ""
 # CF_TURNSTILE_SECRET_KEY = ""
-# dkim config
-# DKIM_SELECTOR = "mailchannels" # 参考 DKIM 部分 mailchannels._domainkey 的 mailchannels
-# DKIM_PRIVATE_KEY = "" # 参考 DKIM 部分 priv_key.txt 的内容
 # telegram bot 最多绑定邮箱数量
 # TG_MAX_ACCOUNTS = 5
 # 全局转发地址列表，如果不配置则不启用，启用后所有邮件都会转发到列表中的地址
