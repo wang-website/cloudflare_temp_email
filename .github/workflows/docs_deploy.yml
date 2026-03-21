@@ -33,28 +33,26 @@ jobs:
 
       - name: check github release done
         run: |
-          attempt=1
-          while [ "$attempt" -le 10 ]; do
-               if wget -q --spider "https://github.com/dreamhunter2333/cloudflare_temp_email/releases/latest/download/frontend.zip"; then
-                   echo "frontend.zip found."
-                   break
-               else
-                   if [ "$attempt" -eq 10 ]; then
-                       echo "Exceeded maximum retries. frontend.zip not found."
-                   else
-                       echo "frontend.zip not found. Retrying in 30 seconds..."
-                       sleep 30
-                   fi
-               fi
-               attempt=$((attempt + 1))
-           done
+          for ((attempt=1; attempt<=10; attempt++)); do
+              if wget -q --spider "https://github.com/dreamhunter2333/cloudflare_temp_email/releases/latest/download/frontend.zip"; then
+                  echo "frontend.zip found."
+                  break
+              else
+                  if [ $attempt -eq 10 ]; then
+                      echo "Exceeded maximum retries. frontend.zip not found."
+                  else
+                      echo "frontend.zip not found. Retrying in 30 seconds..."
+                      sleep 30
+                  fi
+              fi
+          done
 
       - name: Deploy Docs for ${{github.ref_name}}
         run: |
           cd vitepress-docs/
           wget https://github.com/dreamhunter2333/cloudflare_temp_email/releases/latest/download/frontend.zip  -O docs/public/ui_install/frontend.zip
           pnpm install --no-frozen-lockfile
-          if echo "${{ github.ref }}" | grep -q '^refs/tags/'; then
+          if [[ ${{github.ref}} == refs/tags/* ]]; then
             export TAG_NAME=${{github.ref_name}}
           else
             export TAG_NAME=$(git describe --tags --abbrev=0)
