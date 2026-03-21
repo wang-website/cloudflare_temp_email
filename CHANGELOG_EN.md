@@ -18,7 +18,7 @@
 
 - fix: |Auto Reply| Fix auto-reply not triggering when `source_prefix` is empty string (#459), empty value now correctly matches all senders
 - fix: |OAuth2| Fix OAuth2 login callback failure on Android via browser and other mobile browsers due to sessionStorage loss during redirect, add localStorage fallback (#900)
-- fix: |CI| Fix docs_deploy workflow shell syntax error caused by `for ((...))` and `[[ ... ]]` by using POSIX-compatible script syntax
+- fix: |CI| Fix shell syntax errors in backend_deploy workflow by quoting secret assignments to handle values containing parentheses
 
 ### Testing
 
